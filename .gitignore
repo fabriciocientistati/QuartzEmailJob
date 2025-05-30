@@ -1,0 +1,26 @@
+# Build
+bin/
+obj/
+out/
+
+# User secrets
+secrets.json
+
+# IDEs
+.vscode/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Pacotes
+*.nupkg
+packages/
