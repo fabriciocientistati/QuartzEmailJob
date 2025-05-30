@@ -2,78 +2,116 @@
 
 Projeto de exemplo em .NET 9.0 que utiliza o **Quartz.NET** para agendar o envio automático de e-mails a cada 30 segundos. As configurações de e-mail são carregadas de forma segura usando **appsettings.json** e **User Secrets**.
 
+---
+
 ## 🛠️ Tecnologias Utilizadas
 
 - .NET 9.0
-- Quartz.NET (`Quartz`, `Quartz.Extensions.DependencyInjection`, `Quartz.Extensions.Hosting`)
+- Quartz.NET (`Quartz`, `Quartz.Extensions.DependencyInjection`)
 - SMTP (Gmail)
 - Injeção de Dependência (DI)
-- Microsoft.Extensions.Configuration
-- User Secrets para gerenciamento seguro da senha do e-mail
+- `Microsoft.Extensions.Configuration` e `Microsoft.Extensions.Hosting`
+- `User Secrets` para gerenciamento seguro da senha do e-mail
 
 ---
 
 ## 📦 Estrutura do Projeto
 
+```
 QuartzEmailJob/
-├── Program.cs # Configuração do agendador e serviços
-├── EmailJob.cs # Lógica do envio de e-mails
-├── EmailSettings.cs # Classe de configuração do e-mail
-├── appsettings.json # Configurações públicas (sem senha)
-├── .gitignore # Ignora secrets e pastas bin/obj
-├── README.md # Este arquivo 
+├── Program.cs             # Configuração do agendador e serviços
+├── EmailJob.cs            # Lógica do envio de e-mails
+├── EmailSettings.cs       # Classe de configuração do e-mail
+├── appsettings.json       # Configurações públicas (sem senha)
+├── .gitignore             # Ignora secrets e pastas bin/obj
+├── README.md              # Este arquivo
+```
 
+---
 
 ## ⚙️ Configuração
 
 ### 1. Clonar o projeto
 
+```bash
+git clone https://github.com/fabriciocientistati/QuartzEmailJob.git
+cd QuartzEmailJob
+```
+
 ### 2. Restaurar dependências
 
+```bash
 dotnet restore
+```
 
 ### 3. Configurar User Secrets
+
+```bash
 dotnet user-secrets init
-
-Adicione sua senha de aplicativo do Gmail (gere no Google Conta > Segurança > Senhas de app):
 dotnet user-secrets set "EmailSettings:Senha" "sua_senha_de_app"
+```
 
+> 📌 A senha de aplicativo deve ser gerada em [Minha Conta Google > Segurança > Senhas de app](https://myaccount.google.com/security).
 
-📝 Configuração do appsettings.json
+---
 
+### 📝 Configuração do `appsettings.json`
+
+```json
 {
   "EmailSettings": {
     "Remetente": "seu-email@gmail.com",
     "Destinatario": "destinatario@email.com"
   }
 }
+```
 
-A senha do e-mail é carregada de forma segura via user-secrets e não deve ser adicionada no appsettings.json.
+> 🔐 **Importante:** Não adicione a senha no `appsettings.json`. Ela é lida de forma segura via `User Secrets`.
 
-▶️ Executar o Projeto
+---
+
+### ▶️ Executar o Projeto
+
+```bash
 dotnet run
+```
 
+A aplicação irá disparar um e-mail a cada 30 segundos e registrar no console o resultado.
 
-🔒 Segurança
-A senha de e-mail não é armazenada no código nem no Git.
+---
 
-O projeto usa o sistema de User Secrets do .NET para manter suas credenciais seguras durante o desenvolvimento.
+## 🔒 Segurança
 
-Certifique-se de não compartilhar seu secrets.json.
+- Nenhuma senha é salva ou exposta no código-fonte.
+- As credenciais são armazenadas de forma segura no sistema do `User Secrets` do .NET.
+- O caminho do arquivo `secrets.json` fica em:
 
-📤 Deploy
-Este projeto é um app de console voltado para estudos e ambientes controlados. Para produção:
+```bash
+C:\Users\SeuUsuario\AppData\Roaming\Microsoft\UserSecrets\<UserSecretsId>\secrets.json
+```
 
-Utilize IHostedService com logs persistentes
+> ⚠️ Esse arquivo **nunca deve ser compartilhado ou versionado**.
 
-Configure limites de envio
+---
 
-Proteja variáveis sensíveis com Azure Key Vault, AWS Secrets Manager, etc.
+## 📤 Deploy
 
-📄 Licença
-Este projeto está licenciado sob a MIT License.
+Este projeto é voltado para fins didáticos e uso em ambientes controlados.
 
-🙋‍♂️ Autor
-Fabrício Pinheiro Monteiro de Souza
-Email: fabricio.cientistati@gmail.com
-GitHub: @fabriciocientistati
+Para uso em produção, recomenda-se:
+
+- Substituir o Console por `IHostedService` com logs persistentes.
+- Utilizar provedores seguros como:
+  - Azure Key Vault
+  - AWS Secrets Manager
+  - Google Secret Manager
+- Adicionar tratamento de falhas e limites de envio por hora/dia.
+- Implementar retries e fallback.
+
+---
+
+## 🙋‍♂️ Autor
+
+**Fabrício Pinheiro Monteiro de Souza**  
+📧 Email: fabricio.cientistati@gmail.com  
+💻 GitHub: [@fabriciocientistati](https://github.com/fabriciocientistati)
